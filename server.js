@@ -1,8 +1,20 @@
 // Defining Express
 const express = require('express');
 
-//Instance of Express
+//Creating an express instance
 const server = express();
+
+//Importing all user Routes 
+const userRouter = require('./users/userRouter');
+
+//Importing all Post Routes
+const postRouter = require('./posts/postRouter');
+
+//Binding the userRouter 
+server.use('/api/user', userRouter);
+
+//Binding the postRouter
+server.use('/api/posts', postRouter);
 
 //Defining a port for server
 const port = 4000;
