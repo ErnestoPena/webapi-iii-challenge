@@ -35,7 +35,7 @@ userRouter.get('/:id', async (req, res) => {
     res.status(200).send({userwithId});
   }
   catch(err) {
-    res.status(500).json({message: 'There was a problem retreiving the information from the server'});
+    res.status(500).json({message: 'There was a problem retreiving the information from the server', err});
   }
 });
 
@@ -47,7 +47,7 @@ userRouter.get('/:id/posts', async (req, res) => {
         res.status(200).send({myUserPosts});
     }
     catch (err) {
-        res.status(500).json({message: 'There was a problem retreiving the information from the server'});
+        res.status(500).json({message: 'There was a problem retreiving the information from the server', err});
     }
 });
 
