@@ -26,18 +26,30 @@ postRouter.get('/:id', validatePostId, async (req, res) => {
     }
 });
 
-//Method to delete a post
+//DELETE Method to delete a post
 postRouter.delete('/:id', validatePostId, async (req, res) => {
     try {
-        const deletedPost = await postDb.delete(req.params.id);
-        res.status(200).send('The ')
+        const deletedPost = await postDb.remove(req.params.id);
+        res.status(200).send('The post was deleted')
     }
     catch (err) {
-
+        res.status(404).json({message:'There was a problem deleting the post'});
     }
 });
 
-postRouter.put('/:id', (req, res) => {
+//PUT method to update a post
+postRouter.put('/:id', validatePostId, async (req, res) => {
+    try {
+        const changes = {
+            "text": "Ernesto modified. Indeed. I can avoid being seen, if I wish, but to disappear entirely, that is a rare gift."
+        }
+        console.log(changes);
+        const updatedPost = await postDb.update(req.params.id , changes);
+        res.status(200).send({updatedPost});
+    }
+    catch (error) {
+        res.status(400).json({message: 'The post could not be changed'})
+    }
 
 });
 
