@@ -7,6 +7,9 @@ const morgan = require('morgan')
 //Creating an express instance
 const server = express();
 
+//Using json for Express
+server.use(express.json()); 
+
 //Importing all user Routes 
 const userRouter = require('./users/userRouter');
 
@@ -22,8 +25,6 @@ server.use('/api/posts', postRouter);
 //Defining a port for server
 const port = 4000;
 
-//Using json for Express
-server.use(express.json());
 
 //Using morgan
 
@@ -34,13 +35,11 @@ server.get('/', (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`)
 });
 
-
-
 //custom middleware
 
 function logger(req, res, next) {
   const newDate = new Date();
-  console.log(`Request method is: ${req.method} from URL: ${req.path} at ${newDate}` );
+  console.log(`Request method is: ${req.method} from URL: ${req.url} at ${newDate}` );
   next();
 };
 

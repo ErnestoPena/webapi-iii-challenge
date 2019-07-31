@@ -7,25 +7,26 @@ const userRouter = express.Router();
 
 //POST method to add a new user
 //It is working when hard coded but req.body is not working
-userRouter.post('/', validateUser, async (req, res) => {
+userRouter.post('/', async (req, res) => {
   // const lastId = await userDb.get();
   // lastId = lastId.id
   // console.log(lastId)
 
   try {
-    const newUser = {"name" : "Ernesto Pena"};
-    const insertedUser = await userDb.insert(newUser);
-    res.status(201).send({insertedUser});
+    const newUser = req.body //{"name" : " new Ernesto Pena"};
+    console.log(newUser);
+    const insertedUser = await userDb.insert(newUser) ;
+    res.status(201).json(insertedUser);
   }
   catch (err) {
-    res.status(400).json({message: 'There was a problem adding your record', err})
+    res.status(400).json({message:  'There was a problem adding your record', err: err.message})
   }
 });
 
 //POST Method to add a new post to a user
 //It is working when hard coded but req.body is not working
-userRouter.post('/:id/posts', validateUserId, validatePost, async (req, res) => {
-  const postBody = {text: "This is a post added by Ernesto Pena",user_id:2}
+userRouter.post('/:id/posts', async (req, res) => {
+  const postBody = req.body //{text: "This is a post added by Ernesto Pena",user_id:2}
   console.log(postBody);
   try {
     const newPost = await postDb.insert(postBody);
@@ -115,7 +116,7 @@ function validateUser(req, res, next) {
 };
 
 function validatePost(req, res, next) {
-  if (req.body.name === "") {
+  if (req.body.text === "") {
       res.sttaus(400).json({message: "missing user data"});
     } else if (req.body.text === 'undefined') {
         res.status(400).json({message: "missing required text field"});
@@ -124,4 +125,4 @@ function validatePost(req, res, next) {
    }
   };
 
-module.exports = userRouter;
+module.exports = userRouter ;
