@@ -6,30 +6,20 @@ const postDb = require('../posts/postDb'); //Had to import to get access to the 
 const userRouter = express.Router();
 
 //POST method to add a new user
-//It is working when hard coded but req.body is not working
-userRouter.post('/', async (req, res) => {
-  // const lastId = await userDb.get();
-  // lastId = lastId.id
-  // console.log(lastId)
-
+userRouter.post('/', validateUser, async (req, res) => {
   try {
-    const newUser = req.body //{"name" : " new Ernesto Pena"};
-    console.log(newUser);
-    const insertedUser = await userDb.insert(newUser) ;
+    const insertedUser = await userDb.insert(req.body);
     res.status(201).json(insertedUser);
   }
   catch (err) {
-    res.status(400).json({message:  'There was a problem adding your record', err: err.message})
+    res.status(400).json({message:  'There was a problem adding your record', err: err.message});
   }
 });
 
 //POST Method to add a new post to a user
-//It is working when hard coded but req.body is not working
-userRouter.post('/:id/posts', async (req, res) => {
-  const postBody = req.body //{text: "This is a post added by Ernesto Pena",user_id:2}
-  console.log(postBody);
+userRouter.post('/:id/posts', validateUserId, validatePost, async (req, res) => {
   try {
-    const newPost = await postDb.insert(postBody);
+    const newPost = await postDb.insert(req.body);
     res.status(200).send(newPost);
   }
   catch (err) {
@@ -41,7 +31,7 @@ userRouter.post('/:id/posts', async (req, res) => {
 userRouter.get('/', async (req, res) => {
  try {
     const  getUsers = await userDb.get();
-    res.status(200).send({getUsers});//.json({message: 'Users were retreived'})
+    res.status(200).json({getUsers});
  }
  catch (err) {
     res.status(403).json({message: 'There was an error retreiving the information from the server' , err})
@@ -74,7 +64,7 @@ userRouter.get('/:id/posts', validateUserId , async (req, res) => {
 userRouter.delete('/:id', validateUserId, async (req, res) => {
   try {
     const deletedUser = await userDb.remove(req.user.id);
-    res.status(200).send(res.body);
+    res.status(200).json(res.body);
   }
   catch (err) {
     res.status(404).json({message: 'There was a problem removing the record', err});
@@ -86,7 +76,7 @@ userRouter.put('/:id', validateUserId, async (req, res) => {
   const body = "This is to modify a user"
   try {
     const modifyUser = await userDb.update(req.user.id, body);
-    res.status(200).send(modifyUser);
+    res.status(200).json(modifyUser);
   }
   catch(err) {
     res.status(404).json({message: 'The record was not modified' });
@@ -106,9 +96,10 @@ async function validateUserId(req, res, next) {
 };
 
 function validateUser(req, res, next) {
+  const { name } = req.body;
   if (req.body.name === "") {
-    res.sttaus(400).json({message: "missing post data"});
-  } else if (req.body.name === 'undefined') {
+    res.status(400).json({message: "missing user data"});
+  } else if (name === undefined) {
       res.status(400).json({message: "missing required name field"});
   } else {
     next();
@@ -116,11 +107,14 @@ function validateUser(req, res, next) {
 };
 
 function validatePost(req, res, next) {
+   const { text, user_id } = req.body; 
   if (req.body.text === "") {
-      res.sttaus(400).json({message: "missing user data"});
-    } else if (req.body.text === 'undefined') {
+      res.status(400).json({message: "missing post data"});
+    } else if (text === undefined) {
         res.status(400).json({message: "missing required text field"});
-    } else {
+    } else if (user_id === undefined) {
+      res.status(400).json({message: "missing the required user_id field"})
+   } else {
       next();
    }
   };
