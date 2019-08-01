@@ -10,6 +10,28 @@ const server = express();
 //Using json for Express
 server.use(express.json()); 
 
+//Defining a port for server
+const port = 4000;
+
+
+//Using morgan
+server.use(morgan('dev'));
+server.use(logger);
+
+server.get('/', (req, res) => {
+  res.send(`<h2>Let's write some middleware!</h2>`)
+});
+
+//custom global middleware
+
+function logger(req, res, next) {
+  const newDate = new Date();
+  console.log(`Request method is: ${req.method} from URL: ${req.url} at ${newDate}` );
+  next();
+};
+
+
+//Intersting!!! Moving all my routes to the end fixed the logger. It makes sense
 //Importing all user Routes 
 const userRouter = require('./users/userRouter');
 
@@ -21,28 +43,6 @@ server.use('/api/users', userRouter);
 
 //Binding the postRouter
 server.use('/api/posts', postRouter);
-
-//Defining a port for server
-const port = 4000;
-
-
-//Using morgan
-
-server.use(morgan('dev'));
-server.use(logger);
-
-server.get('/', (req, res) => {
-  res.send(`<h2>Let's write some middleware!</h2>`)
-});
-
-//custom middleware
-
-function logger(req, res, next) {
-  const newDate = new Date();
-  console.log(`Request method is: ${req.method} from URL: ${req.url} at ${newDate}` );
-  next();
-};
-
 
 
 //Running the server.....

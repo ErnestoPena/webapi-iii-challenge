@@ -38,10 +38,10 @@ postRouter.delete('/:id', validatePostId, async (req, res) => {
 
 //PUT method to update a post
 //This one is failing. The error says there is an Empty .update detected and that it does not contain any values
-postRouter.put('/:id', validatePostId, async (req, res) => {
+postRouter.put('/:id' , validatePostId , async (req, res) => {
     try {
-        const { text, id } = req.body;
-        console.log(text , id);
+        const { text , id } = req.body;
+        console.log(text , req.id);
         const updatedPost = await postDb.update(id , text);
         res.status(200).json(updatedPost);
     }
@@ -69,12 +69,12 @@ async function validatePostId(req, res, next) {
           default:
           myMessage = 'Unknown'; //I think there is no such thing as unknown HTTP request but I just added a default to the switch 
     }
-
+    console.log('Inside validatePostId', validPostId)
     if (validPostId) {
         res.body = validPostId;
         next(); 
     } else {
-        postsres.status(404).send(`Your request to ${myMessage} the Post with ID ${req.params.id} was not found in the server, enter a valid post's id`).end;
+        res.status(404).json(`Your request to ${myMessage} the Post with ID ${req.params.id} was not found in the server, enter a valid post's id`).end;
     } 
 };
 
