@@ -22,7 +22,8 @@ server.use(morgan('dev'));
 server.use(logger);
 
 server.get('/', (req, res) => {
-  res.send(`<h2>Let's write some middleware!</h2>`)
+ const todayMessage = process.env.TM;
+  res.send(`<h2>This is Ernesto Deployment on port ${port}!</h2></br><h3>Today's message is:<br><br> ${todayMessage}</h3>`)
 });
 
 //custom global middleware
