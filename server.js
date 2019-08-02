@@ -1,4 +1,4 @@
-// Defining Express
+// Defining Express object
 const express = require('express');
 
 //Adding morgan library to log server activity
