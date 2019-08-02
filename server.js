@@ -2,7 +2,10 @@
 const express = require('express');
 
 //Adding morgan library to log server activity
-const morgan = require('morgan')
+const morgan = require('morgan');
+
+//Requiring dotenv
+require('dotenv').config();
 
 //Creating an express instance
 const server = express();
@@ -11,7 +14,7 @@ const server = express();
 server.use(express.json()); 
 
 //Defining a port for server
-const port = 4000;
+const port = process.env.PORT || 9000;
 
 
 //Using morgan
